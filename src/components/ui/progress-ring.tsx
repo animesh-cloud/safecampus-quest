@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 
 interface ProgressRingProps {
   percentage: number;
@@ -22,12 +23,17 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
   useEffect(() => {
     const timer = setTimeout(() => {
       setAnimatedPercentage(percentage);
-    }, 500);
+    }, 100);
     return () => clearTimeout(timer);
   }, [percentage]);
 
   return (
-    <div className={`relative ${className}`}>
+    <motion.div 
+      className={`relative ${className}`}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.8, type: "spring" }}
+    >
       <svg
         width={size}
         height={size}
@@ -65,14 +71,20 @@ export const ProgressRing: React.FC<ProgressRingProps> = ({
       {/* Percentage Text */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-2xl font-bold text-gradient-cyberpunk">
+          <motion.div 
+            className="text-2xl font-bold text-gradient-cyberpunk"
+            key={animatedPercentage}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             {Math.round(animatedPercentage)}%
-          </div>
+          </motion.div>
           <div className="text-xs text-muted-foreground mt-1">
             Ready
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };

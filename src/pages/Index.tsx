@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FloatingIcons } from '@/components/ui/floating-icons';
@@ -8,8 +9,13 @@ import { FeatureCard } from '@/components/ui/feature-card';
 import { LeaderboardPreview } from '@/components/ui/leaderboard-preview';
 import { BadgesShowcase } from '@/components/ui/badges-showcase';
 import { SOSPreview } from '@/components/ui/sos-preview';
+import { InteractiveModules } from '@/components/ui/interactive-modules';
+import { useGameState } from '@/hooks/useGameState';
+import { Toaster } from '@/components/ui/toaster';
 
 const Index = () => {
+  const { progress } = useGameState();
+  
   return (
     <div className="min-h-screen bg-background custom-scrollbar">
       {/* Hero Section */}
@@ -20,26 +26,53 @@ const Index = () => {
         <div className="absolute inset-0 gradient-cyberpunk opacity-10"></div>
         
         <div className="container mx-auto px-6 text-center z-10">
-          <div className="animate-fade-in-up">
-            <h1 className="text-6xl md:text-8xl font-black mb-6">
-              <span className="text-gradient-cyberpunk">🌍 SafeCampus</span>
-            </h1>
-            
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 text-foreground">
-              Making Campuses <span className="text-gradient-energy">Disaster-Ready</span> 🚀
-            </h2>
-            
-            <p className="text-xl md:text-2xl mb-8 text-muted-foreground max-w-3xl mx-auto">
-              Gamified learning, virtual drills, and emergency tools for schools & colleges.
-            </p>
-            
-            <Button 
-              size="lg" 
-              className="text-xl px-8 py-4 gradient-cyberpunk hover:scale-105 transition-transform duration-300 glow-blue"
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.h1 
+              className="text-6xl md:text-8xl font-black mb-6"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.8, type: "spring" }}
             >
-              Try the Demo → 
-            </Button>
-          </div>
+              <span className="text-gradient-cyberpunk">🌍 SafeCampus</span>
+            </motion.h1>
+            
+            <motion.h2 
+              className="text-3xl md:text-5xl font-bold mb-6 text-foreground"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              Making Campuses <span className="text-gradient-energy">Disaster-Ready</span> 🚀
+            </motion.h2>
+            
+            <motion.p 
+              className="text-xl md:text-2xl mb-8 text-muted-foreground max-w-3xl mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              Gamified learning, virtual drills, and emergency tools for schools & colleges.
+            </motion.p>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Button 
+                size="lg" 
+                className="text-xl px-8 py-4 gradient-cyberpunk hover:scale-105 transition-transform duration-300 glow-blue"
+              >
+                Try the Demo → 
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
@@ -55,58 +88,72 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="flex justify-center mb-8">
-            <ProgressRing percentage={68} size={200} strokeWidth={12} />
-          </div>
+          <motion.div 
+            className="flex justify-center mb-8"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+          >
+            <ProgressRing percentage={progress.score} size={200} strokeWidth={12} />
+          </motion.div>
           
-          <div className="text-center">
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+          >
             <p className="text-2xl font-bold text-primary mb-2">
-              You're 68% Disaster Ready! 🚀
+              You're {progress.score}% Disaster Ready! 🚀
             </p>
             <p className="text-muted-foreground">
-              Complete 2 more modules to reach 85% readiness
+              {progress.score < 85 
+                ? `Complete ${Math.ceil((85 - progress.score) / 10)} more modules to reach 85% readiness`
+                : 'Excellent! You\'re well-prepared for emergencies! 🎉'
+              }
             </p>
-          </div>
+          </motion.div>
         </div>
       </section>
+
+      {/* Interactive Modules Section */}
+      <InteractiveModules />
 
       {/* Features Section */}
       <section className="py-20 bg-muted/10">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h2 className="text-4xl font-bold mb-4 text-gradient-energy">
               How SafeCampus Works
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
               Experience the future of disaster preparedness education
             </p>
-          </div>
+          </motion.div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <FeatureCard
-              icon="🎮"
-              title="Gamified Modules"
-              description="Learn safety with interactive quizzes, badges, and achievement systems that make learning fun."
-              gradient="cyberpunk"
-            />
-            <FeatureCard
-              icon="🏃‍♂️"
-              title="Virtual Drills"
-              description="Simulate real emergencies with AR/VR experiences for earthquakes, floods, and fires."
-              gradient="energy"
-            />
-            <FeatureCard
-              icon="🚨"
-              title="Emergency Tools"
-              description="One-tap SOS button with real-time alerts and emergency contact integration."
-              gradient="danger"
-            />
-            <FeatureCard
-              icon="📊"
-              title="Admin Dashboard"
-              description="Track preparedness scores across campus with detailed analytics and reporting."
-              gradient="nature"
-            />
+            {[
+              { icon: "🎮", title: "Gamified Modules", description: "Learn safety with interactive quizzes, badges, and achievement systems that make learning fun.", gradient: "cyberpunk" as const },
+              { icon: "🏃‍♂️", title: "Virtual Drills", description: "Simulate real emergencies with AR/VR experiences for earthquakes, floods, and fires.", gradient: "energy" as const },
+              { icon: "🚨", title: "Emergency Tools", description: "One-tap SOS button with real-time alerts and emergency contact integration.", gradient: "danger" as const },
+              { icon: "📊", title: "Admin Dashboard", description: "Track preparedness scores across campus with detailed analytics and reporting.", gradient: "nature" as const }
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1, duration: 0.6 }}
+              >
+                <FeatureCard {...feature} />
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -250,6 +297,8 @@ const Index = () => {
           </div>
         </div>
       </footer>
+      
+      <Toaster />
     </div>
   );
 };
